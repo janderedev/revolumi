@@ -19,7 +19,7 @@
     "escape-latex": "latest",
     "node-fetch": "latest",
     "owoify-js": "latest",
-    "revolt.js": "latest",
+    "revolt.js": "^6.0.0",
     "ulid": "latest"
   },
   "devDependencies": {
