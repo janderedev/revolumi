@@ -6,6 +6,7 @@ import { commands } from "./commands";
 import { cat } from "./lib/owo";
 
 const prefix = process.env.PREFIX || "real!"; // amazing prefix!
+const allowedChannels = process.env.ALLOWED_CHANNELS?.split(',');
 
 let client = new Client();
 
@@ -22,6 +23,7 @@ client.on("message", async msg => {
   )
     msg.edit({ content: await cat(msg.content) });
   if (!msg.content.startsWith(prefix) || msg.content.length >= 2000) return;
+  if (allowedChannels && msg.author_id != client.user?._id && !allowedChannels.includes(msg.channel_id)) return;
 
   let splitted = msg.content.substring(5).split(" ");
   console.log(splitted);
