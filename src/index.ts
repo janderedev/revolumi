@@ -14,7 +14,7 @@ const stream = fs.createWriteStream('./command.log', {
   flags: 'a',
   mode: 0o0666,
 })
-function logCommand(message: Message, args: string[]) {
+function logCommand(message: Message, args: string[], success: boolean) {
   const payload = {
     ts: new Date().toISOString(),
     author: {
@@ -22,6 +22,7 @@ function logCommand(message: Message, args: string[]) {
       id: message.author_id,
       name: message.author?.username, // too lazy to update revolt.js so it includes discrim, this is just for convenience anyway
     },
+    success: success,
     command: args,
     channel: message.channel_id,
     server: message.channel?.server_id,
@@ -58,16 +59,20 @@ client.on("message", async msg => {
   let command = commands.get(splitted.shift() ?? "") ?? ((_: string) => null);
   let args = splitted.join(" ");
   let res: string | null = await command(args);
-  logCommand(msg, fullArgs);
   console.log(res);
+
+  let success = true;
 
   try {
     if (res && res.length <= 1999) {
       if (msg.author_id === client.user?._id) msg.edit({ content: res });
       else msg.channel?.sendMessage('\u200b' + res);
     } else {
+      success = false;
       msg.react('01GE404PWVWCVDPZHQR9DTC599');
     }
+
+    logCommand(msg, fullArgs, success);
   } catch(e) {
     console.error(e);
   }
