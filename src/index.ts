@@ -6,7 +6,7 @@ import { commands } from "./commands.js";
 import { cat } from "./lib/owo.js";
 import fs from 'fs';
 
-const prefix = process.env.PREFIX || "real!"; // amazing prefix!
+export const prefix = process.env.PREFIX || "real!"; // amazing prefix!
 // Array.from(controllers.client.getReadyClient().servers.get('01F80118K1F2EYD9XAMCPQ0BCT').channels.keys()).join(',')
 const allowedChannels = process.env.ALLOWED_CHANNELS?.split(',');
 

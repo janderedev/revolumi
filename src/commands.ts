@@ -1,6 +1,7 @@
 import { bottom, cat, owo } from "./lib/owo.js";
 import { lescape } from "./lib/escape.js";
 import chroma from 'chroma-js';
+import { prefix } from "./index.js";
 
 const gradient = (start: string, end: string, length: number) => {
   const colors: string[] = [];
@@ -53,7 +54,7 @@ const trans = async (s: string) => {
 
 const help = async (_: string): Promise<string> => {
   return '### Funny selfbot command list\n###### <https://github.com/sussycatgirl/revolumi>\n'
-    + Array.from(commands.keys()).map((item) => '- ' + item).join('\n');
+    + Array.from(commands.keys()).map((item) => '- ' + prefix + item).join('\n');
 }
 
 export const commands = new Map([
