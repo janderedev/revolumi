@@ -53,7 +53,7 @@ const trans = async (s: string) => {
 };
 
 const help = async (_: string): Promise<string> => {
-  return '### Funny selfbot command list\n###### <https://github.com/sussycatgirl/revolumi>\n'
+  return '**Funny selfbot command list**\n###### <https://github.com/sussycatgirl/revolumi>\n'
     + Array.from(commands.keys()).map((item) => '- ' + prefix + item).join('\n');
 }
 
