@@ -1,5 +1,5 @@
-import { bottom, cat, owo } from "./lib/owo";
-import { lescape } from "./lib/escape";
+import { bottom, cat, owo } from "./lib/owo.js";
+import { lescape } from "./lib/escape.js";
 import chroma from 'chroma-js';
 
 const gradient = (start: string, end: string, length: number) => {
@@ -19,14 +19,13 @@ const gay = async (s: string) => {
   return s
     .split("\n")
     .map(
-      s =>
-        `\$\\textsf{${Array.from(s)
-          .map(lescape)
-          .map(c => {
-            const color = chroma.hsv(steps * ++i, 0.9, 1);
-            return `\\color{${color.hex('rgb')}}${c}`;
-          })
-          .join("")}}\$`
+      s => surroundGradient(Array.from(s)
+        .map(lescape)
+        .map(c => {
+          if (!c.trim().length) return ' ';
+          const color = chroma.hsv(steps * ++i, 0.9, 1);
+          return `\\color{${color.hex('rgb')}}${c}`;
+        }))
     )
     .join("\n");
 };
@@ -45,14 +44,17 @@ const trans = async (s: string) => {
   return s
     .split("\n")
     .map(
-      (s) =>
-        `\$\\textsf{${Array.from(s)
-          .map(lescape)
-          .map((c, i) => `\\color{${g[i]}}${c}`)
-          .join("")}}\$`
+      (s) => surroundGradient(Array.from(s)
+        .map(lescape)
+        .map((c, i) => c.trim().length ? `\\color{${g[i]}}${c}` : ' '))
     )
     .join("\n");
 };
+
+const help = async (_: string): Promise<string> => {
+  return '### Funny selfbot command list\n###### <https://github.com/sussycatgirl/revolumi>\n'
+    + Array.from(commands.keys()).map((item) => '- ' + item).join('\n');
+}
 
 export const commands = new Map([
   ["shrug", async (_: string) =>  "¯\\\\\\_(ツ)\\_/¯"],
@@ -61,5 +63,27 @@ export const commands = new Map([
   ["bottom", async (s: string) => bottom(s)],
   ["owo", owo],
   ["cat", cat],
-  ["owocat", async (s: string) => owo(await cat(s))]
+  ["owocat", async (s: string) => owo(await cat(s))],
+  ["help", help],
 ]);
+
+function surroundGradient(input: string[]) {
+  const left = '\$\\textsf{';
+  const right = '}\$';
+
+  let result = '';
+
+  while (input.length) {
+    let current = '';
+
+    while (input.length && current.length + input[0].length < 128 - left.length - right.length) {
+      current += input.shift();
+    }
+
+    // katex breaks if we don't separate the sections in some way so we'll put a zero width character
+    result += left + current + right + '\u200b';
+    current = '';
+  }
+
+  return result;
+}
